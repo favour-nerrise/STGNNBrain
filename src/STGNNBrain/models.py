@@ -14,7 +14,8 @@ class STGCN(nn.Module):
         self.lstm = nn.LSTM(hidden_channels, hidden_channels, batch_first=True)
         self.linear = nn.Linear(hidden_channels, out_channels)
 
-    def forward(self, x, edge_index, batch):
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
         x = F.relu(self.conv1(x, edge_index))
         x = F.relu(self.conv2(x, edge_index))
         x, _ = self.lstm(x.unsqueeze(0))
@@ -28,7 +29,8 @@ class STChebNet(nn.Module):
         self.gru = nn.GRU(hidden_channels, hidden_channels, batch_first=True)
         self.linear = nn.Linear(hidden_channels, out_channels)
 
-    def forward(self, x, edge_index, batch):
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
         x = F.relu(self.conv1(x, edge_index))
         x = F.relu(self.conv2(x, edge_index))
         x, _ = self.gru(x.unsqueeze(0))
@@ -42,7 +44,8 @@ class STGAT(nn.Module):
         self.temporal_conv = nn.Conv1d(hidden_channels * heads, hidden_channels, kernel_size=3, padding=1)
         self.linear = nn.Linear(hidden_channels, out_channels)
 
-    def forward(self, x, edge_index, batch):
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
         x = F.relu(self.conv1(x, edge_index))
         x = F.relu(self.conv2(x, edge_index))
         x = F.relu(self.temporal_conv(x.unsqueeze(0).transpose(1, 2)))
@@ -56,7 +59,8 @@ class STSGConv(nn.Module):
         self.temporal_attn = nn.MultiheadAttention(hidden_channels, num_heads=4)
         self.linear = nn.Linear(hidden_channels, out_channels)
 
-    def forward(self, x, edge_index, batch):
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
         x = F.relu(self.conv1(x, edge_index))
         x = F.relu(self.conv2(x, edge_index))
         x = x.unsqueeze(0)
