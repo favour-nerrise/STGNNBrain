@@ -2,7 +2,6 @@ import torch
 from torch_geometric.nn import GCNConv, ChebConv, GATConv, SGConv
 import numpy as np
 import os
-
 import torch.nn as nn
 import torch.nn.functional as F
 
